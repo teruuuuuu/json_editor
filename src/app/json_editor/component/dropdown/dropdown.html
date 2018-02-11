@@ -1,0 +1,34 @@
+
+<!-- 
+<a href="javascript:void(0)" onClick="return false;" class="list-group-item">
+  <span class="glyphicon glyphicon-envelope"></span> メッセージ <span class="label label-success">3</span>
+  <span class="glyphicon pull-right glyphicon-chevron-down"></span>
+</a>
+<div id="menuOne" class="sublinks collapse in" aria-expanded="false" style="">
+  <a class="list-group-item">  受信ボックス<span class="glyphicon pull-right"></span></a>
+  <a class="list-group-item">  送信ボックス<span class="glyphicon pull-right"></span></a>
+</div> -->
+
+<!-- <div *ngIf={{jsonValue.c === "JsonNumArray"}}>JsonNumArray</div> -->
+
+<div *ngIf="isJsonValueArray(jsonValue)" >
+  <a class="list-group-item">{{"["}}</a>
+  <div *ngFor="let j of jsonValue.v">
+    <a class="list-group-item"> {{"{"}} </a>
+    <div *ngFor="let k of j.mapToKeys()" class="display:inline-flex">
+
+      <a *ngIf="isJsonValue(j.e.get(k))" class="list-group-item">{{k + " : {"}}</a>
+      <drop-down *ngIf="isJsonValue(j.e.get(k))" [jsonValue]="j.e.get(k)"></drop-down>
+      <a *ngIf="isJsonValue(j.e.get(k))" class="list-group-item">{{"}"}}</a>
+
+      <a *ngIf="!isJsonValue(j.e.get(k))" class="list-group-item">{{k + " : " + j.e.get(k)}}</a>
+    </div>
+    <a class="list-group-item">{{"},"}}</a>
+  </div>
+  <a class="list-group-item">{{"]"}}</a>
+</div>
+
+<div *ngIf="isJsonNumValue(jsonValue)" style="display:inline-flex" >{{jsonValue.v}}</div>
+<div *ngIf="isJsonStrValue(jsonValue)" style="display:inline-flex" >{{jsonValue.v}}</div>
+
+<div *ngIf="isJsonValue(jsonValue)">{{jsonValue.v}}</div>

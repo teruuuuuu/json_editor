@@ -1,0 +1,20 @@
+<!-- heroが見つかった時のみこの部分を表示する-->
+<div *ngIf="hero">
+  <h1>{{title}}</h1>
+  <h2>{{hero.name}} details!</h2>
+  <div><label>id: </label>{{hero.id}}</div>
+  <div>
+    <label>name: </label>
+    <!-- 注意 ngMoelを使う場合はNgModuleでFormsModuleをインポートしないといけない-->
+    <input [(ngModel)]="hero.name" placeholder="name"><br />
+    <!-- カスタムディレクティブであたいの変更をそのまま代入するようにする-->
+    <my-text [(textInput)]="hero.name" placeHolder="name"></my-text><br />
+    <button (click)="goBack()">Back</button>
+    <button (click)="save()">Save</button>
+  </div>
+</div>
+
+<!-- heroが見つからなかった場合の処理 -->
+<div *ngIf="!hero">
+  hero not found.
+</div>
