@@ -11,6 +11,11 @@
 
 <!-- <div *ngIf={{jsonValue.c === "JsonNumArray"}}>JsonNumArray</div> -->
 
+<!--
+アコーディオン作成時のメモ
+開く: 親側のaタグのクラスからcollapsedを削除する("list-group-item").子供のdivタグのclass属性にinを追加する ("sublinks collapse in" )それからstyleがheight:0px;になっていたら削除する
+閉じる: 親側のaタグのクラスからcollapsedを追加する("list-group-item collapsed").子供のdivタグのclass属性からinを削除する ("sublinks collapse" )それからstyleがheight:0px;にする
+-->
 <div *ngIf="isJsonValueArray(jsonValue)" >
   <a class="list-group-item">{{"["}}</a>
   <div *ngFor="let j of jsonValue.v">
@@ -28,7 +33,14 @@
   <a class="list-group-item">{{"]"}}</a>
 </div>
 
+
 <div *ngIf="isJsonNumValue(jsonValue)" style="display:inline-flex" >{{jsonValue.v}}</div>
 <div *ngIf="isJsonStrValue(jsonValue)" style="display:inline-flex" >{{jsonValue.v}}</div>
 
-<div *ngIf="isJsonValue(jsonValue)">{{jsonValue.v}}</div>
+
+<div *ngFor="let k of jsonValue.mapToKeys()" class="display:inline-flex">
+  <a *ngIf="isJsonValue(jsonValue.e.get(k))" class="list-group-item">{{k + " : {"}}</a>
+  <drop-down *ngIf="isJsonValue(jsonValue.e.get(k))" [jsonValue]="jsonValue.e.get(k)"></drop-down>
+  <a *ngIf="isJsonValue(jsonValue.e.get(k))" class="list-group-item">{{"}"}}</a>
+  <a *ngIf="!isJsonValue(jsonValue.e.get(k))" class="list-group-item">{{k + " : " + jsonValue.e.get(k)}}</a>
+</div>
