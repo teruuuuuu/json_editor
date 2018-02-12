@@ -6,7 +6,11 @@ export class JsonStrValue extends JsonValue{
     clone() { return new JsonStrValue(this.v); }
     toString = () => {
         if(this.v == null){return 'null'}
-        return this.v
+        return '"' + this.v + '"'
+    }
+    setValue = (val: string) => {
+        if(val === ""){this.v=null}
+        else{this.v=val}
     }
 }
   

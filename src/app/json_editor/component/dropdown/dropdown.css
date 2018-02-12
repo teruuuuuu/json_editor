@@ -67,3 +67,12 @@ glyphicon {
 .pull-right {
   float: right!important;
 }
+
+
+.text-style {
+  border:0;
+  font-size:1em;
+  font-family:Arial, sans-serif;
+  border:solid 1px #ccc;
+  width:300px;
+}

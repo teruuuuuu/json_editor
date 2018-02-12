@@ -1,5 +1,5 @@
 <div>
-<h1>this is Json editor</h1>
+<h1>Json editor</h1>
 
 
 <!-- 
@@ -38,6 +38,8 @@
         </div>
       </body>
 </html> -->
-
-
-<drop-down [jsonValue]="jsonElement"></drop-down>
+<button style="width: 50%; display: inline-flex; margin-left: 10px; margin-right: 10px; padding-left: 23%;" (click)="toJsonView()">→</button>
+<div style="width: 100%; display: inline-flex; margin-left: 10px; margin-right: 10px;">
+  <div [style.width]="'50%'"><drop-down [jsonValue]="jsonElement" ></drop-down></div>
+  <div style="background-color:white; border: 1px solid #ddd; width: 48%">{{jsonStr}}</div>
+</div>

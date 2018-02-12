@@ -7,7 +7,11 @@ export class JsonNumValue extends JsonValue {
 
     toString = () => {
         if(this.v == null){return 'null'}
-        return String(this.v)
+        return '"' + String(this.v) + '"'
+    }
+    setValue = (val: string) => {
+        if(val === ""){this.v=null}
+        else{this.v=Number(val)}
     }
 }
   

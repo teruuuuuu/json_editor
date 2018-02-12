@@ -16,6 +16,7 @@ import {JsonValueArray } from "../model/json-value-array"
 })
 export class JsonEditorPage implements OnInit {
   jsonElement: JsonValueArray
+  jsonStr: string = ""
 
   initVal():void {
     this.jsonElement = new JsonValueArray(new Array(this.emptyConfig1(), this.emptyConfig2(), this.emptyConfig3()))
@@ -25,7 +26,7 @@ export class JsonEditorPage implements OnInit {
     const time1 = new JsonStrValue("00:00")
     const day1 = new JsonNumValue(0)
     const b1_1_p1 = new JsonStrValue(null)
-    const b1_1_p2 = new JsonNumValue(null)
+    const b1_1_p2 = new JsonNumArray(new Array(1,2,3,4))
     const b1_1_m = new Map<string, JsonValue>()
     b1_1_m.set("p1", b1_1_p1)
     b1_1_m.set("p2", b1_1_p2)
@@ -83,8 +84,10 @@ export class JsonEditorPage implements OnInit {
     // JSON.parse(this.jsonElement.toString())
     console.log(this.jsonElement.c)
     console.log(this.jsonElement.className())
-
-
     this.route.params.forEach((params: Params) => {  });
+  }
+
+  toJsonView(){
+    this.jsonStr = this.jsonElement.toString()
   }
 }
