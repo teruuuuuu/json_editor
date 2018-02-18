@@ -10,6 +10,10 @@ import {JsonStrArray } from "../model/json-str-array"
 import {JsonValue } from "../model/json-value"
 import {JsonValueArray } from "../model/json-value-array"
 
+import * as ParserGen from '../parser/parser-genrator'
+import {StringParser} from "../parser/string-parser"
+import { ParserError } from '@angular/compiler';
+
 @Component({
   selector: 'json_editor', //ディレクティブのタグ名
   templateUrl: './index.html', //htmlテンプレートの読み込み
@@ -18,8 +22,27 @@ export class JsonEditorPage implements OnInit {
   jsonElement: JsonValueArray
   jsonStr: string = ""
 
+
+
   initVal():void {
     this.jsonElement = new JsonValueArray(new Array(this.emptyConfig1(), this.emptyConfig2(), this.emptyConfig3()))
+    this.parseTest()
+  }
+
+
+  parseTest():void {
+    const str1 = "Hello, world!"
+    const str2 = "Hello, Hello, world!"
+    
+    const helloParser = ParserGen.string("Hello, ")
+    const worldParser = ParserGen.string("world")
+    const hwParser = ParserGen.seq(helloParser, worldParser)
+
+    const manyHelloWorld = ParserGen.seq(ParserGen.many(helloParser), worldParser)
+    
+    console.info(helloParser.parse(str1))
+    console.info(hwParser.parse(str1))
+    console.info(manyHelloWorld.parse(str2))
   }
 
   emptyConfig1(): JsonValue {
@@ -82,8 +105,8 @@ export class JsonEditorPage implements OnInit {
     // console.info(this.jsonElement)
     // console.log(this.jsonElement.toString())
     // JSON.parse(this.jsonElement.toString())
-    console.log(this.jsonElement.c)
-    console.log(this.jsonElement.className())
+    // console.log(this.jsonElement.c)
+    // console.log(this.jsonElement.className())
     this.route.params.forEach((params: Params) => {  });
   }
 
