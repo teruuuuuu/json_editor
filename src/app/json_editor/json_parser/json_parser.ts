@@ -4,29 +4,43 @@ import { ParseSuccess, ParseResult } from '../parser/parser-result';
 
 const sqParer = P.string("'")
 const sqStop = P.stop(new Array("'"))
+const dqParer = P.string('"')
+const dqStop = P.stop(new Array('"'))
+
 const coParer = P.string(":")
 const coStop = P.stop(new Array(":"))
 const spSeq = P.continues(P.string(" "))
-const cmParer = P.string(",")
+const cmParse = P.string(",")
 
-const wordParse = P.bracket(sqParer, sqStop, sqParer)
+const wordParse = P.bracket(dqParer, dqStop, dqParer)
 const numParse =  P.plus(P.or(arryToParsers(Array("1","2","3","4","5","6","7","8","9","0"))))
+const floatingParse = P.seq(numParse, P.option(P.seq(P.string("."),numParse)))
+const nullParse = P.string("null")
+const trueParse = P.string("true")
+const falseParse = P.string("false")
 
-
+const valueParse = P.or([wordParse, floatingParse, nullParse, trueParse, falseParse])
 const arrayParse = P.bracket(
     P.string("[")
     , P.option(P.seq(
-        P.or([numParse, wordParse]),
+        valueParse,
         P.continues(P.seq(
-            P.bracket(  spSeq,   cmParer,   spSeq), 
-            P.or([numParse, wordParse])))))
+            P.bracket(  spSeq,   cmParse,   spSeq), 
+            valueParse))))
     ,P.string("]"))
+const valueWithArrayParse = P.or([valueParse, arrayParse])
 
-const attributePaser = P.seq(P.seq(  coStop,   coParer), P.seq(  spSeq,   arrayParse))
+const keyParser = P.bracket(spSeq, wordParse, spSeq)
+const memberParse = P.bracket(keyParser, coParer, P.bracket(spSeq, valueWithArrayParse, spSeq))
+const membersParse = P.seq(memberParse, P.continues(P.seq(
+    P.bracket(spSeq, cmParse, spSeq),
+    memberParse
+)))
 
+const objParse = P.bracket(P.seq(spSeq, P.string("{")), membersParse, P.seq(P.string("}"), spSeq))
 
-const jsonParser = P.or([attributePaser, arrayParse])
-const parsers = [  sqParer,   sqStop,   coParer,   coStop,   spSeq,   cmParer,   wordParse,   arrayParse,   attributePaser]
+const jsonParser = P.or([objParse, valueWithArrayParse])
+const parsers = [  sqParer,   sqStop,   coParer,   coStop,   spSeq,   cmParse,   wordParse,   arrayParse,   objParse]
 
 export function jsonParse(str: string): void {
     const strnoline = str.replace("\r","").replace("\n","")

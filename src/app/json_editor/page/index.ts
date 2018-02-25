@@ -35,8 +35,8 @@ export class JsonEditorPage implements OnInit {
 
 
   parseTest():void {
-    // const str = "hello: ['world', '!', '!', 1, 2, 3]"
-    const str = "[1, 2, 3]"
+    const str = ' {"hello" : ["world", "!", 1, 2, 3]}'
+    // const str = "[2, 3]"
     jsonParse(str)
   }
 
