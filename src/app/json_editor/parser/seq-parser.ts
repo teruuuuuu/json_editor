@@ -19,15 +19,16 @@ export class SeqParser implements Parser<[any, any]> {
             const rresult:ParseResult<any>  = this.rhs.parse(next);
             if(rresult instanceof ParseSuccess) {
                 const value2:ParseResult<any> = rresult.value
-                return new ParseSuccess<[any, any]>([value1, value2],
+                return new ParseSuccess<[any, any]>(this, [lresult, rresult], [value1, value2],
                     rresult.next
                 );
+            } else if(rresult instanceof ParseFailer) {
+                return new ParseFailer<any>(this, [lresult, rresult], next + " is not match", rresult.message);
             } else {
-                return new ParseFailer<any>(next + " is not match", input);
+                return new ParseFailer<any>(this, [lresult, rresult], next + " is not match", input);
             }
-            
         } else {
-            return new ParseFailer<any>(next + " is not match", input);
+            return new ParseFailer<any>(this, lresult,  next + " is not match", input);
         }
     }
 }

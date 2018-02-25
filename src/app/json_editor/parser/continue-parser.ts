@@ -1,7 +1,7 @@
 import {Parser} from './parser'
 import {ParseResult, ParseSuccess, ParseFailer} from './parser-result'
 
-export class ManyParser implements Parser<any> {
+export class ContinueParser implements Parser<any> {
     parser: Parser<any>
 
     constructor(parser: Parser<any>) {
@@ -19,7 +19,9 @@ export class ManyParser implements Parser<any> {
                 values.push(result.value);
                 next = result.next
             } else {
-                return new ParseSuccess(values, previous);
+                var v = ""
+                values.forEach(r=>{v+=r})
+                return new ParseSuccess(this, result, v, previous);
             }
         }
     }

@@ -10,9 +10,12 @@ import {JsonStrArray } from "../model/json-str-array"
 import {JsonValue } from "../model/json-value"
 import {JsonValueArray } from "../model/json-value-array"
 
-import * as ParserGen from '../parser/parser-genrator'
+import * as P from '../parser/parser-genrator'
 import {StringParser} from "../parser/string-parser"
 import { ParserError } from '@angular/compiler';
+import { ParseSuccess, ParseResult } from '../parser/parser-result';
+
+import {jsonParse} from '../json_parser/json_parser'
 
 @Component({
   selector: 'json_editor', //ディレクティブのタグ名
@@ -30,19 +33,11 @@ export class JsonEditorPage implements OnInit {
   }
 
 
-  parseTest():void {
-    const str1 = "Hello, world!"
-    const str2 = "Hello, Hello, world!"
-    
-    const helloParser = ParserGen.string("Hello, ")
-    const worldParser = ParserGen.string("world")
-    const hwParser = ParserGen.seq(helloParser, worldParser)
 
-    const manyHelloWorld = ParserGen.seq(ParserGen.many(helloParser), worldParser)
-    
-    console.info(helloParser.parse(str1))
-    console.info(hwParser.parse(str1))
-    console.info(manyHelloWorld.parse(str2))
+  parseTest():void {
+    // const str = "hello: ['world', '!', '!', 1, 2, 3]"
+    const str = "[1, 2, 3]"
+    jsonParse(str)
   }
 
   emptyConfig1(): JsonValue {

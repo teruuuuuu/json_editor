@@ -13,8 +13,8 @@ export class StringParser implements Parser<string> {
 
     parse(input: string):ParseResult<String> {
         if(input.startsWith(this.literal)){
-            return new ParseSuccess(this.literal, input.substring(this.literal.length))
+            return new ParseSuccess(this, null, this.literal, input.substring(this.literal.length))
         }
-        return new ParseFailer("expect: " + this.literal, input);
+        return new ParseFailer(this, null, "expect: " + this.literal, input);
     }
 }
