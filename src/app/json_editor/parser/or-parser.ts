@@ -2,9 +2,12 @@ import {Parser} from './parser'
 import {ParseResult, ParseSuccess, ParseFailer} from './parser-result'
 
 export class OrParser implements Parser<[Array<any>]> {
-    psArray: Array<Parser<any>>
+    psArray: Array<Parser<any>> = new Array()
     constructor(psArray: Array<Parser<any>>) {
         this.psArray = psArray
+    }
+    addParser(parser: Parser<any>): void {
+        this.psArray.push(parser)
     }
 
     parse(input: string) :ParseResult<any> {

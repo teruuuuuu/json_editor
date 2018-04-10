@@ -1,82 +1,127 @@
 import {Parser} from '../parser/parser'
 import * as P from '../parser/parser-genrator'
-import { ParseSuccess, ParseResult } from '../parser/parser-result';
+import { ParseSuccess, ParseResult, ParseFailer } from '../parser/parser-result';
+import { ParserError } from '@angular/compiler';
 
-const sqParer = P.string("'")
-const sqStop = P.stop(new Array("'"))
+import {JBase, JMember, JArray, JPair, JStr, JNum, JBool} from './json_base';
+
 const dqParer = P.string('"')
 const dqStop = P.stop(new Array('"'))
+const wordParse = P.triplet(dqParer, dqStop, dqParer)
 
-const coParer = P.string(":")
-const coStop = P.stop(new Array(":"))
-const spSeq = P.continues(P.string(" "))
-const cmParse = P.string(",")
+const intParse =  P.plus(P.or(arryToParsers(Array("1","2","3","4","5","6","7","8","9","0"))))
+const floatingParse = P.seq(intParse, P.option(P.seq(P.string("."),intParse)))
+const numParse = P.seq(P.option(P.string("-")), floatingParse)
 
-const wordParse = P.bracket(dqParer, dqStop, dqParer)
-const numParse =  P.plus(P.or(arryToParsers(Array("1","2","3","4","5","6","7","8","9","0"))))
-const floatingParse = P.seq(numParse, P.option(P.seq(P.string("."),numParse)))
 const nullParse = P.string("null")
 const trueParse = P.string("true")
 const falseParse = P.string("false")
 
-const valueParse = P.or([wordParse, floatingParse, nullParse, trueParse, falseParse])
-const arrayParse = P.bracket(
-    P.string("[")
-    , P.option(P.seq(
-        valueParse,
-        P.continues(P.seq(
-            P.bracket(  spSeq,   cmParse,   spSeq), 
-            valueParse))))
-    ,P.string("]"))
-const valueWithArrayParse = P.or([valueParse, arrayParse])
+const valueParser = P.or([wordParse, numParse, nullParse, trueParse, falseParse])
 
-const keyParser = P.bracket(spSeq, wordParse, spSeq)
-const memberParse = P.bracket(keyParser, coParer, P.bracket(spSeq, valueWithArrayParse, spSeq))
-const membersParse = P.seq(memberParse, P.continues(P.seq(
-    P.bracket(spSeq, cmParse, spSeq),
-    memberParse
-)))
+const spSeq = P.continues(P.string(" "))
+const cmParse = P.string(",")
+const elementsParser = P.seq(valueParser, P.continues(P.seq(P.triplet(spSeq, cmParse, spSeq), valueParser)))
 
-const objParse = P.bracket(P.seq(spSeq, P.string("{")), membersParse, P.seq(P.string("}"), spSeq))
+const aoParser = P.triplet(spSeq, P.string("["), spSeq)
+const acParser = P.triplet(spSeq, P.string("]"), spSeq)
+const arrayParser = P.triplet(aoParser, P.option(elementsParser), acParser)
+valueParser.addParser(arrayParser)
 
-const jsonParser = P.or([objParse, valueWithArrayParse])
-const parsers = [  sqParer,   sqStop,   coParer,   coStop,   spSeq,   cmParse,   wordParse,   arrayParse,   objParse]
+const coParer = P.string(":")
+const pairParser = P.seq(P.seq(P.triplet(spSeq, wordParse, spSeq), coParer), P.triplet(spSeq, valueParser, spSeq))
+const membersParser = P.seq(pairParser, P.continues(P.seq(P.triplet(spSeq, cmParse, spSeq), pairParser)))
 
-export function jsonParse(str: string): void {
+const objParser = P.triplet(P.triplet(spSeq, P.string("{"), spSeq), P.option(membersParser), P.triplet(spSeq, P.string("}"), spSeq))
+valueParser.addParser(objParser)
+
+const jsonParser = P.seq(valueParser, P.seq(spSeq, P.end()))
+
+export function jsonParse(str: string): JBase {
     const strnoline = str.replace("\r","").replace("\n","")
-    
-      resultSeq(jsonParser.parse(strnoline))
+    const result  = jsonParser.parse(strnoline)
+    return semanticVal(result)
 }
-
-function resultSeq(parseResult: ParseResult<any>):void {
-    console.info(parseResult)
-    if (parseResult instanceof ParseSuccess){
-        showVal(parseResult)
-
-      const childResult = parseResult.childResult
-      if (childResult instanceof Array){
-        childResult.forEach(child => {
-          if (child instanceof ParseSuccess){
-              resultSeq(child)
-          }
-        }) 
-      } else if (childResult instanceof ParseSuccess){
-          resultSeq(childResult)
-      }
-    }
-}
-
-function showVal(parseResult: ParseSuccess<any>) {
-    if (parseResult.parser ==   wordParse){
-        if(parseResult.value instanceof Array){
-            console.log("word vlue=" + parseResult.value[1])
-        }
-    } else if (parseResult.parser ==   numParse){
-        console.log("num vlue=" + parseResult.value.toString())
-    }
-}
-
 
 function arryToParsers(strings: Array<string>){
     return strings.map(s=> {return P.string(s)})
+}
+
+function getVal(parseResult: ParseSuccess<any>): String {
+    if (parseResult.parser ==   wordParse){
+        if(parseResult.value instanceof Array){
+            return parseResult.value[1];
+        }
+    } else if (parseResult.parser ==   numParse){
+        if(parseResult.value instanceof Array) {
+            return getSeqVal(parseResult.value)
+        } else {
+            return parseResult.value
+        }
+        
+    }
+    return "";
+}
+
+function getSeqVal(resultArray: Array<any>): String {
+    var ret = ""
+    resultArray.filter(r => r !== null ).forEach((r) => {
+        if (r instanceof Array){
+            ret += getSeqVal(r)
+        } else {
+            ret += r.toString();
+        }
+    })
+    return ret
+}
+
+function semanticVal(parseResult: ParseResult<any>):JBase {
+    if (parseResult instanceof ParseSuccess){
+        const parser = parseResult.parser;
+        if (parser == jsonParser){
+            return semanticVal(parseResult.childResult[0])
+        } else if (parser == valueParser) {
+            return semanticVal(parseResult.childResult)
+        } else if (parser == objParser) {
+            return semanticVal(parseResult.childResult[1].childResult)
+        } else if (parser == membersParser){
+            const m = Array<JBase>();
+            m.push(semanticVal(parseResult.childResult[0]))
+            if (parseResult.childResult instanceof Array && parseResult.childResult.length > 1 
+                && parseResult.childResult[1].childResult instanceof Array ) {
+                    parseResult.childResult[1].childResult.forEach(r=>
+                        m.push(semanticVal(r.childResult[1])
+                    ))
+            }
+            return new JMember(m);
+        } else if(parser == pairParser) {
+            const key = new JStr(parseResult.childResult[0].childResult[0].childResult[1].value[1])
+            const v = semanticVal(parseResult.childResult[1].childResult[1])
+            return new JPair(key, v)
+        } else if (parser == arrayParser) {
+            if (parseResult.childResult[1].childResult instanceof ParseFailer){
+                return new JArray(new Array())
+            }
+            return semanticVal(parseResult.childResult[1].childResult)
+        } else if (parser == elementsParser) {
+            const m = Array<JBase>();
+            m.push(semanticVal(parseResult.childResult[0].childResult))
+            if (parseResult.childResult instanceof Array && parseResult.childResult.length > 1 
+                && parseResult.childResult[1].childResult instanceof Array ) {
+                    parseResult.childResult[1].childResult.forEach(r=>
+                        m.push(semanticVal(r.childResult[1].childResult))
+                    )
+            }
+            return new JArray(m)
+        } else if (parser == wordParse ) {
+            return new JStr(getVal(parseResult))
+        } else if (parser == numParse) {
+            return new JNum(Number(getVal(parseResult)))
+        } else if (parser == trueParse) {
+            return new JBool(true)
+        } else if (parser == falseParse) {
+            return new JBool(false)
+        } 
+    }
+    return null;
 }

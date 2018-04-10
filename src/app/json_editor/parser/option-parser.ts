@@ -14,6 +14,7 @@ export class OptionParser implements Parser<[any]> {
             const value1:ParseResult<any> = psresult.value
             return new ParseSuccess<any>(this, psresult, value1,psresult.next);    
         } else {
+            new ParseSuccess(this.ps, null, "", input)
             return new ParseSuccess<any>(this, psresult, null,input);
         }
     }
