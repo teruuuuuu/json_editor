@@ -1,0 +1,23 @@
+.jsoneditor {
+    /* color: #1a1a1a; */
+    color: gray;
+    border: 1px solid #3883fa;
+    background: #FFF;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* padding: 0; */
+    padding: 5px 3px 5px 3px;
+    line-height: 100%;
+    font-size: 14pt;
+    font-family: arial,sans-serif;
+    overflow-y: scroll;
+}
+
+.json_line {
+    word-wrap: break-word;
+    white-space: pre;
+}

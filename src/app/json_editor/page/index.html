@@ -1,45 +1,13 @@
-<div>
-<h1>Json editor</h1>
-
-
-<!-- 
-<html lang="ja" dir="ltr"><head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bootstrap3.3.7のアイコン付アコーディオン(Collapse)を使用するサンプル(list-group)</title>
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-      </head>
-      <body>
-        <h2>list-group</h2>
-        <div id="menu">
-          <div class="panel list-group">
-            
-            <a href="javascript:void(0)" onClick="return false;" class="list-group-item collapsed">
-              <span class="glyphicon glyphicon-envelope"></span> メッセージ <span class="label label-success">3</span>
-              <span class="glyphicon pull-right glyphicon-chevron-down"></span>
-            </a>
-            <div id="menuOne" class="sublinks collapse" aria-expanded="false" style="height: 0px;">
-              <a class="list-group-item">  受信ボックス<span class="glyphicon pull-right"></span></a>
-              <a class="list-group-item">  送信ボックス<span class="glyphicon pull-right"></span></a>
-            </div>
-
-            <a href="javascript:void(0)" onClick="return false;" class="list-group-item">
-              <span class="glyphicon glyphicon-envelope"></span> メッセージ <span class="label label-success">3</span>
-              <span class="glyphicon pull-right glyphicon-chevron-down"></span>
-            </a>
-            <div id="menuOne" class="sublinks collapse in" aria-expanded="false" style="">
-              <a class="list-group-item">  受信ボックス<span class="glyphicon pull-right"></span></a>
-              <a class="list-group-item">  送信ボックス<span class="glyphicon pull-right"></span></a>
-            </div>
-
-          </div>
-        </div>
-      </body>
-</html> -->
-<button style="width: 50%; display: inline-flex; margin-left: 10px; margin-right: 10px; padding-left: 23%;" (click)="toJsonView()">→</button>
-<div style="width: 100%; display: inline-flex; margin-left: 10px; margin-right: 10px;">
-  <div [style.width]="'50%'"><drop-down [jsonValue]="jsonElement" ></drop-down></div>
-  <div style="background-color:white; border: 1px solid #ddd; width: 48%">{{jsonStr}}</div>
+<div [style.height]="'400px'">
+  <div class="json_contents">
+    <div [style.width]="'43%'">
+      <json-edit [jsonValue]="jsonValue" ></json-edit>
+    </div>
+    <div class="split">
+        <button (click)="this.parse()" >→</button>
+    </div>
+    <div [style.width]="'43%'">
+        <json-view-content [jsonValue]="jsonValue" ></json-view-content>
+    </div>
+  </div>
 </div>

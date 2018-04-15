@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import {style} from '@angular/animations';
 
-import {JsonValue} from '../../model/json-value'
+import {JsonValue} from '../../model/back/json-value'
 
 @Component({
   selector: 'drop-down', //ディレクティブのタグ名

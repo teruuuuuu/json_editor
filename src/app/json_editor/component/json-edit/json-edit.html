@@ -1,0 +1,3 @@
+<div class="jsoneditor" contenteditable="true" >
+    <div  class="json_line" *ngFor="let jline of jsonView.v; let i = index; let lastLine = last" ><span class="json_line" *ngFor="let jview of jline; let j = index; let end = last" [style.color]="jview.color()">{{jview}}</span></div>
+</div>

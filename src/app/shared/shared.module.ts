@@ -4,17 +4,16 @@ import { CommonModule }  from '@angular/common'; // BrowserModule has already be
 import { FormsModule }   from '@angular/forms';
 //import { HttpModule }    from '@angular/http'; // httpサービスを利用するのに必要
 
-import { MyTextComponent } from './my-text/MyText';
-import { BannerComponent } from './banner/banner.component';
-import { WelcomeComponent } from './welcome/welcome.component';
+// import { MyTextComponent } from './my-text/MyText';
+// import { WelcomeComponent } from './welcome/welcome.component';
 import { TwainComponent } from './twain/twain.component';
 import { TwainService } from './twain/twain.service';
 
 @NgModule({
   imports:      [ CommonModule, FormsModule ],
   exports:      [ CommonModule, FormsModule,
-                  MyTextComponent, BannerComponent, WelcomeComponent, TwainComponent],
-  declarations: [ MyTextComponent, BannerComponent, WelcomeComponent, TwainComponent ],
+                   TwainComponent],
+  declarations: [ TwainComponent ],
   providers: [ TwainService ]
 })
 export class SharedModule { }

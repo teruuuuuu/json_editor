@@ -1,0 +1,4 @@
+<div >[<div *ngFor="let j of jsonValue.v; let i = index; let last = last">
+    <json-view [jsonValue]="j"></json-view>
+    <span *ngIf="i !== jsonValue.v.length - 1" class="noline">,</span>
+</div>]</div>
