@@ -21,11 +21,21 @@ export class JsonEdit implements OnInit {
   constructor(private route: ActivatedRoute) {
   }
 
+  @Input('jsonValue')
+  set updateInternalVal(jsonValue) {
+    this.viewReflect(jsonValue)
+    this.onEditChange();
+  }
+
   ngOnInit(): void {
-    console.info(this.jsonValue)
+    this.viewReflect(this.jsonValue)
+    // console.info(this.jsonView)
+    // console.info(this.jsonView.toString())
+  }
+
+  viewReflect(jsonValue: J.JBase): void {
+    this.jsonValue = jsonValue
     this.jsonView = new V.JsonLineViewModel(this.jsonVal2View(this.jsonValue,  0, 0))
-    console.info(this.jsonView)
-    console.info(this.jsonView.toString())
   }
 
   jsonVal2View = (jsonValue: J.JBase, indent: number, nextIndent: number): Array<Array<V.JsonViewModel>> => {
@@ -82,5 +92,10 @@ export class JsonEdit implements OnInit {
     var ret = "";
     for(var i = 0; i < num; i++){ret += str}
     return ret
+  }
+
+
+  onEditChange(): void {
+    // alert("change")
   }
 }

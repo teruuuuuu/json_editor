@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import {Observable} from "rxjs/Observable";
@@ -18,6 +18,7 @@ import { ParserError } from '@angular/compiler';
 // import { ParseSuccess, ParseResult } from '../parser/parser-result';
 
 import {jsonParse} from '../../util/json_parser/json_parser'
+import { JsonEdit } from '../component/json-edit/json-edit';
 
 @Component({
   selector: 'json_editor', //ディレクティブのタグ名
@@ -25,6 +26,7 @@ import {jsonParse} from '../../util/json_parser/json_parser'
   styleUrls: [ './index.css' ]
 })
 export class JsonEditorPage implements OnInit {
+
   jsonValue: J.JBase = new J.JArray([])
   jsonStr: string = ""
 
@@ -47,17 +49,15 @@ export class JsonEditorPage implements OnInit {
     for(var i = 0; i < a.length; i++){
       ret += a[i].innerHTML;
     }
-    console.info(ret)
+    // console.info(ret)
     this.jsonValue = jsonParse(ret)
     // location.reload()
-    this.jsonValue = new J.JArray([])
-    this.chRef.detectChanges()
+    // this.chRef.detectChanges()
   }
 
   constructor(
     // urlパラメータを取得するのに必要
-    private route: ActivatedRoute,
-    private chRef: ChangeDetectorRef) {
+    private route: ActivatedRoute) {
       this.initVal()
     }
   ngOnInit(): void {

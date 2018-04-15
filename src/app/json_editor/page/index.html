@@ -1,7 +1,7 @@
 <div [style.height]="'400px'">
   <div class="json_contents">
     <div [style.width]="'43%'">
-      <json-edit [jsonValue]="jsonValue" ></json-edit>
+      <json-edit (ngModelChange)="onEditChange()" [jsonValue]="jsonValue" ></json-edit>
     </div>
     <div class="split">
         <button (click)="this.parse()" >→</button>
