@@ -5,8 +5,6 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   { path: '', redirectTo: 'json_editor', pathMatch: 'full'},
   { path: 'json_editor', loadChildren: 'app/json_editor/module/json_editor.module'},
-  { path: 'heroes', loadChildren: 'app/heroes/module/heroes.module#HeroesModule'},
-  { path: 'dashboard', loadChildren: 'app/dashboard/dashboard.module#DashboardModule'}
 ];
 
 @Component({

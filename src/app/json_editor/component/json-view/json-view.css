@@ -1,0 +1,28 @@
+.text-style {
+    border:0;
+    font-size:1em;
+    font-family:Arial, sans-serif;
+    border:solid 1px #ccc;
+    width:300px;
+}
+
+.json_line {
+  /* display: inline-flex; */
+  float: left;
+}
+
+.noline {
+  /* display: inline-flex;  */
+  float: left;
+}
+
+.content-view {
+  color: #1a1a1a;
+  border: 1px solid #3883fa;
+  background: #FFF;
+  box-sizing: border-box;
+  position: relative;
+  padding: 0;
+  line-height: 100%;
+  height: 100%;
+}

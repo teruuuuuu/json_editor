@@ -11,24 +11,50 @@
 
 <!-- <div *ngIf={{jsonValue.c === "JsonNumArray"}}>JsonNumArray</div> -->
 
-<div *ngIf="isJsonValueArray(jsonValue)" >
-  <a class="list-group-item">{{"["}}</a>
-  <div *ngFor="let j of jsonValue.v">
-    <a class="list-group-item"> {{"{"}} </a>
-    <div *ngFor="let k of j.mapToKeys()" class="display:inline-flex">
-
-      <a *ngIf="isJsonValue(j.e.get(k))" class="list-group-item">{{k + " : {"}}</a>
-      <drop-down *ngIf="isJsonValue(j.e.get(k))" [jsonValue]="j.e.get(k)"></drop-down>
-      <a *ngIf="isJsonValue(j.e.get(k))" class="list-group-item">{{"}"}}</a>
-
-      <a *ngIf="!isJsonValue(j.e.get(k))" class="list-group-item">{{k + " : " + j.e.get(k)}}</a>
+<!--
+アコーディオン作成時のメモ
+開く: 親側のaタグのクラスからcollapsedを削除する("list-group-item").子供のdivタグのclass属性にinを追加する ("sublinks collapse in" )それからstyleがheight:0px;になっていたら削除する
+閉じる: 親側のaタグのクラスからcollapsedを追加する("list-group-item collapsed").子供のdivタグのclass属性からinを削除する ("sublinks collapse" )それからstyleがheight:0px;にする
+-->
+<div *ngIf="isJsonValueArray(jsonValue)" [style.display]="isChiledDisplayStyle()">
+  <!-- <div *ngIf="isOpen"> -->
+    <a class="list-group-item padding-style" [style.padding-left]="paddingStr(padding)" (click)="openStatusChange()" >{{"["}}</a>
+    <div *ngFor="let j of jsonValue.v">
+      <drop-down [padding]="padding+1" [jsonValue]="j" ></drop-down>
     </div>
-    <a class="list-group-item">{{"},"}}</a>
+    <a class="list-group-item" >{{"]"}}</a>
+  <!-- </div> -->
+</div>
+<div *ngIf="isJsonValueArray(jsonValue)">
+  <div *ngIf="!isOpen">
+      <a class="list-group-item padding-style" [style.padding-left]="paddingStr(padding)" (click)="openStatusChange()">{{"[...]"}}</a>
   </div>
-  <a class="list-group-item">{{"]"}}</a>
 </div>
 
-<div *ngIf="isJsonNumValue(jsonValue)" style="display:inline-flex" >{{jsonValue.v}}</div>
-<div *ngIf="isJsonStrValue(jsonValue)" style="display:inline-flex" >{{jsonValue.v}}</div>
+<div *ngIf="isJsonValue(jsonValue)" [style.display]="isChiledDisplayStyle()">
+  <!-- <div *ngIf="isOpen"> -->
+    <a class="list-group-item padding-style" [style.padding-left]="paddingStr(padding)" (click)="openStatusChange()"> {{"{"}} </a>
+    <div *ngFor="let k of jsonValue.mapToKeys()" class="display:inline-flex">
+      <a *ngIf="isJsonValue(jsonValue.e.get(k))" class="list-group-item" [style.padding-left]="paddingStr(padding)">{{k + " :"}}</a>
+      <drop-down *ngIf="isJsonValue(jsonValue.e.get(k))" [padding]="padding+1" [jsonValue]="jsonValue.e.get(k)"></drop-down>
+      <!-- <a *ngIf="isJsonValue(jsonValue.e.get(k))" class="list-group-item" [style.padding-left]="paddingStr(padding+1)">{{"}"}}</a> -->
+      <a *ngIf="!isJsonValue(jsonValue.e.get(k))" class="list-group-item" [style.padding-left]="paddingStr(padding)">
+        {{k + " : "}}
+        <drop-down [padding]="padding+1" [jsonValue]="jsonValue.e.get(k)"></drop-down>
+      </a>
+    </div>
+    <a class="list-group-item" [style.padding-left]="paddingStr(padding)">{{"},"}}</a>
+  <!-- </div> -->
+</div>
+<div *ngIf="isJsonValue(jsonValue)" >
+    <div *ngIf="!isOpen">
+      <a class="list-group-item padding-style" [style.padding-left]="paddingStr(padding)" (click)="openStatusChange()">{{"{...},"}}</a>
+    </div>
+</div>
 
-<div *ngIf="isJsonValue(jsonValue)">{{jsonValue.v}}</div>
+<div *ngIf="isJsonNumValue(jsonValue) || isJsonStrValue(jsonValue)" style="display:inline-flex">
+    <input type="text" class="text-style" value="{{jsonValue.v}}" (change)="changeVal(inputVal)" #inputVal />
+</div>
+<div *ngIf="isJsonNumArray(jsonValue) || isJsonStrArray(jsonValue)" style="display:inline-flex;" >
+  [<input type="text" class="text-style" value="{{jsonValue.v}}" (change)="changeVal(inputVal)" #inputVal/>]
+</div>

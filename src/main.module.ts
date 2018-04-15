@@ -5,13 +5,10 @@ import { FormsModule } from '@angular/forms'; //テンプレートでバイン�
 import { HttpModule }    from '@angular/http'; // httpサービスを利用するのに必要
 // 今回はWebAPIのモックを使用する
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api'; // npm install --save angular-in-memory-web-api
-import { InMemoryDataService }  from 'app/heroes/service/in-memory-data.service';
 
-import { CoreModule } from 'app/core/core.module';
+import { CoreModule }   from 'app/core/core.module';
 import { AppComponent } from 'app/app';
-import { SharedModule }           from 'app/shared/shared.module';
-import { HeroesServiceModule } from 'app/heroes/service/hero-service.module';
-import { StoreModule } from 'app/store/store-module';
+import { SharedModule } from 'app/shared/shared.module';
 
 
 @NgModule({
@@ -21,10 +18,7 @@ import { StoreModule } from 'app/store/store-module';
     CoreModule,
     //FormsModule,
     HttpModule,
-    InMemoryWebApiModule.forRoot(InMemoryDataService),
-    SharedModule,
-    StoreModule,
-    HeroesServiceModule
+    SharedModule
   ],
   declarations: [
     AppComponent

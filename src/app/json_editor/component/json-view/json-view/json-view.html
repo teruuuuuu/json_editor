@@ -1,0 +1,7 @@
+<div class="json_line">
+    <json-array-view *ngIf="isJsonArray()" [jsonValue]="jsonValue"></json-array-view>
+    <json-object-view *ngIf="isJsonObject()" [jsonValue]="jsonValue"></json-object-view>
+    <json-pair-view *ngIf="isJsonPair()" style="display:flex" [jsonValue]="jsonValue"></json-pair-view>
+    <json-str-view *ngIf="isJsonStr()" [jsonValue]="jsonValue"></json-str-view>
+    <json-num-view *ngIf="isJsonNum()" [jsonValue]="jsonValue"></json-num-view>
+</div>
